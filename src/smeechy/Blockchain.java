@@ -15,8 +15,7 @@ public final class Blockchain {
         if (this.blocks.isEmpty()) {
             blocks.add(new Block(1, "0"));
         } else {
-            Block last = blocks.get(blocks.size() - 1);
-            blocks.add(new Block(blocks.size(), last.getHash()));
+            blocks.add(new Block(blocks.size() + 1, blocks.get(blocks.size() - 1).getHash()));
         }
     }
 
@@ -61,10 +60,10 @@ final class Block {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder("Block:\n");
-        builder.append("ID: " + this.id + "\n");
+        builder.append("Id: " + this.id + "\n");
         builder.append("Timestamp: " + this.timestamp + "\n");
-        builder.append("Previous block's hash: " + this.previousHash + "\n");
-        builder.append("This block's hash: " + this.getHash() + "\n\n");
+        builder.append("Hash of the previous block: \n" + this.previousHash + "\n");
+        builder.append("Hash of the block: \n" + this.getHash() + "\n\n");
         return builder.toString();
     }
 }
