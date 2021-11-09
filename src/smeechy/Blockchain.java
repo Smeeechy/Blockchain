@@ -11,18 +11,31 @@ public final class Blockchain {
         this.blocks = new ArrayList<>();
     }
 
-    //TODO
     public void generateBlock() {
-
+        if (this.blocks.isEmpty()) {
+            blocks.add(new Block(1, "0"));
+        } else {
+            Block last = blocks.get(blocks.size() - 1);
+            blocks.add(new Block(blocks.size(), last.getHash()));
+        }
     }
 
     public boolean validate() {
         String previousHash = "0";
         for (Block block : this.blocks) {
-            if (block.getPreviousHash().equals(previousHash)) return false;
+            if (!block.getPreviousHash().equals(previousHash)) return false;
             previousHash = block.getHash();
         }
         return true;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        for (Block block : this.blocks) {
+            builder.append(block.toString());
+        }
+        return builder.toString();
     }
 }
 
@@ -44,9 +57,19 @@ final class Block {
     public String getPreviousHash() {
         return this.previousHash;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder("Block:\n");
+        builder.append("ID: " + this.id + "\n");
+        builder.append("Timestamp: " + this.timestamp + "\n");
+        builder.append("Previous block's hash: " + this.previousHash + "\n");
+        builder.append("This block's hash: " + this.getHash() + "\n\n");
+        return builder.toString();
+    }
 }
 
-class StringUtil {
+final class StringUtil {
     /* Applies Sha256 to a string and returns a hash. */
     public static String applySha256(String input){
         try {
