@@ -34,6 +34,10 @@ public class Main {
         }
     }
 
+    /**
+     * TODO Move this method onto the Blockchain
+     * @param miners    The pool of Miners that can be selected from to generate random Transactions.
+     */
     private static void trade(List<Miner> miners) {
         Miner payee;
         Miner recipient;

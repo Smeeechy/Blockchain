@@ -40,6 +40,10 @@ public final class Block implements Serializable {
         this.magic = magic;
     }
 
+    /**
+     *
+     * @return  the instance of the Miner that created this Block.
+     */
     public Miner getMiner() {
         return this.MINER;
     }

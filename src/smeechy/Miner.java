@@ -17,6 +17,10 @@ public final class Miner implements Callable<Tuple>, Comparable {
         this.blockchain = blockchain;
     }
 
+    /**
+     * Attempts to find a valid hash for the given Block by brute-forcing with randomly assigned magic numbers.
+     * @param block The Block for which to generate the hash
+     */
     private void mine(Block block) {
         String hash = block.generateHash();
         String regex = String.format("^0{%d,}.*", this.blockchain.getZeros());
@@ -31,6 +35,12 @@ public final class Miner implements Callable<Tuple>, Comparable {
         return this.ID;
     }
 
+    /**
+     * Transfers the given amount from this Miner's wallet balance to the given recipient.
+     * @param recipient The Miner that will receive the payment from this Miner.
+     * @param payment   The amount that will be transferred.
+     * @return  a Transaction that will be recorded in the Blockchain for the next generated Block.
+     */
     public synchronized Transaction pay(Miner recipient, long payment) {
         if (payment > 0 && this.balance > payment) {
             this.balance -= payment;
@@ -50,6 +60,10 @@ public final class Miner implements Callable<Tuple>, Comparable {
         return this.balance;
     }
 
+    /**
+     * Invoked by the Blockchain to award a bounty to the first Miner to find a valid hash.
+     * @param amount    The bounty this Miner earned. Assigned by the Blockchain.
+     */
     public synchronized void giveCreditForBlock(long amount) {
         this.blocksMined++;
         this.balance += amount;
@@ -60,13 +74,18 @@ public final class Miner implements Callable<Tuple>, Comparable {
         return this.blocksMined;
     }
 
+    /**
+     * Creates a new Block based on the current info from the Blockchain. Records the time this process takes
+     * in seconds.
+     * @return  A Tuple containing the newly created Block and the time in seconds it took to generate.
+     */
     @Override
     public Tuple call() {
         LocalTime start = LocalTime.now();
         Block block = new Block(this, blockchain.getLength() + 1, blockchain.getHashOfLastBlock(), blockchain.getTransactions());
         mine(block);
         LocalTime end = LocalTime.now();
-        long duration = Duration.between(start, end).toMillis();
+        long duration = Duration.between(start, end).getSeconds();
         return new Tuple(block, duration);
     }
 
@@ -87,6 +106,9 @@ public final class Miner implements Callable<Tuple>, Comparable {
     }
 }
 
+/**
+ * Utility class for simplifying the process of recording and returning Blocks and the time they took to create.
+ */
 class Tuple {
     public final Block block;
     public final long duration;
